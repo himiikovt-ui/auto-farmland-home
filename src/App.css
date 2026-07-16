@@ -1,0 +1,2732 @@
+/* ============================================================
+   Auto Farmland — cottagecore automation farm theme
+   Palette: linen ground, moss ink, sprout green, marigold accent
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Karla:wght@400;500;700&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --linen: #f1eee0;
+  --linen-deep: #e8e4d0;
+  --paper: #fbf9f0;
+  --ink: #2f3a26;
+  --soil: #6f6753;
+  --sprout: #75904f;
+  --sprout-deep: #52683a;
+  --sprout-soft: #e3e9d2;
+  --marigold: #dfa04f;
+  --marigold-soft: #f6e8cd;
+  --berry: #a05a6b;
+  --berry-soft: #f0e0e4;
+  --hedge: #d9d3ba;
+  --hedge-soft: #e6e1cb;
+  --shadow-soft: 0 2px 6px rgba(63, 58, 38, 0.06), 0 10px 24px rgba(63, 58, 38, 0.07);
+
+  --display: "Zilla Slab", "Rockwell", Georgia, serif;
+  --body: "Karla", "Segoe UI", system-ui, sans-serif;
+
+  font-family: var(--body);
+  color: var(--ink);
+  background: var(--linen);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% -4%, rgba(169, 196, 127, 0.18), transparent 26rem),
+    radial-gradient(circle at 96% 0%, rgba(223, 160, 79, 0.12), transparent 24rem),
+    var(--linen);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--display);
+  letter-spacing: 0.01em;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: var(--ink);
+}
+
+button {
+  cursor: pointer;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+input,
+select,
+textarea {
+  border: 1px solid var(--hedge);
+  border-radius: 10px;
+  background: var(--paper);
+  padding: 9px 11px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--sprout);
+  outline-offset: 2px;
+}
+
+textarea {
+  min-height: 74px;
+  resize: vertical;
+}
+
+/* ---------- shell ---------- */
+
+.app {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 272px 1fr;
+}
+
+.app.farmHomeApp {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.farmHomeApp > .content {
+  padding: 20px;
+}
+
+.sidebar {
+  background: var(--linen-deep);
+  border-right: 1px solid var(--hedge);
+  padding: 26px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.logoBlock {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.logoMark {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--sprout-deep);
+  color: #f4f0dd;
+  box-shadow: var(--shadow-soft);
+}
+
+.logoBlock h1 {
+  margin: 0;
+  font-size: 1.22rem;
+  color: var(--sprout-deep);
+}
+
+.logoBlock p {
+  margin: 3px 0 0;
+  color: var(--soil);
+  font-size: 0.82rem;
+}
+
+.nav {
+  display: grid;
+  gap: 6px;
+}
+
+.navButton {
+  border: 1px solid transparent;
+  text-align: left;
+  padding: 11px 13px;
+  border-radius: 11px;
+  color: var(--soil);
+  background: transparent;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.navButton:hover {
+  background: rgba(117, 144, 79, 0.12);
+  color: var(--sprout-deep);
+}
+
+.navButton.active {
+  background: var(--paper);
+  border-color: var(--hedge);
+  color: var(--sprout-deep);
+  font-weight: 700;
+  box-shadow: var(--shadow-soft);
+}
+
+.sidebarCard {
+  margin-top: auto;
+  padding: 15px;
+  border-radius: 14px;
+  background: var(--sprout-soft);
+  border: 1px dashed var(--sprout);
+}
+
+.sidebarCard p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--sprout-deep);
+  line-height: 1.45;
+}
+
+.sidebarCard .eyebrow {
+  margin-bottom: 6px;
+}
+
+/* ---------- top bar & content ---------- */
+
+.content {
+  padding: 26px 30px 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.topbar h2 {
+  margin: 2px 0 0;
+  font-size: 1.7rem;
+  color: var(--ink);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--sprout);
+}
+
+.topbarActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- buttons ---------- */
+
+.primaryButton,
+.secondaryButton,
+.ghostButton {
+  border-radius: 11px;
+  padding: 9px 15px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.primaryButton {
+  background: var(--sprout-deep);
+  color: #f6f3e2;
+}
+
+.primaryButton:hover {
+  background: var(--sprout);
+  box-shadow: var(--shadow-soft);
+}
+
+.secondaryButton {
+  background: var(--marigold-soft);
+  border-color: var(--marigold);
+  color: #7c5a22;
+}
+
+.secondaryButton:hover {
+  background: #f1dcb4;
+}
+
+.ghostButton {
+  background: transparent;
+  border-color: var(--hedge);
+  color: var(--soil);
+}
+
+.ghostButton:hover {
+  background: var(--hedge-soft);
+  color: var(--ink);
+}
+
+/* ---------- panels ---------- */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--hedge);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: var(--shadow-soft);
+}
+
+.widePanel {
+  width: 100%;
+}
+
+.panelHeader h3 {
+  margin: 0;
+  font-size: 1.16rem;
+  color: var(--sprout-deep);
+}
+
+.panelHeader p {
+  margin: 5px 0 0;
+  color: var(--soil);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.panelHeader {
+  margin-bottom: 15px;
+}
+
+.compactHeader {
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+.miniDivider {
+  height: 1px;
+  background: var(--hedge);
+  margin: 18px 0 4px;
+}
+
+/* ---------- seed-packet stat cards (signature) ---------- */
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 12px;
+}
+
+.statCard {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--hedge);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: var(--shadow-soft);
+}
+
+.statCard::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px dashed var(--hedge);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.statCard p {
+  margin: 0 0 4px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--sprout);
+}
+
+.statCard strong {
+  font-family: var(--display);
+  font-size: 1.55rem;
+  color: var(--ink);
+}
+
+.statHint {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.74rem;
+  color: var(--soil);
+}
+
+/* ---------- layout grids ---------- */
+
+.twoColumn {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 18px;
+}
+
+.threeColumn {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.studioGrid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+@media (max-width: 1180px) {
+  .twoColumn,
+  .threeColumn,
+  .studioGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 14px 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--hedge);
+  }
+
+  .sidebar .logoMark {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+
+  .sidebar .logoBlock p {
+    display: none;
+  }
+
+  .nav {
+    display: flex;
+    flex: 1 1 100%;
+    gap: 7px;
+    overflow-x: auto;
+    padding: 2px 1px 5px;
+    scroll-snap-type: x proximity;
+  }
+
+  .navGroup {
+    display: flex;
+    gap: 7px;
+  }
+
+  .navGroupTitle {
+    display: none;
+  }
+
+  .navButton {
+    flex: 0 0 auto;
+    padding: 9px 11px;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+
+  .content {
+    padding: 16px 16px 34px;
+  }
+
+  .sidebarCard {
+    display: none;
+  }
+}
+
+/* ---------- lists & cards ---------- */
+
+.postList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.needCard,
+.libraryCard,
+.experimentCard,
+.performanceCard,
+.topPerformer,
+.backendListItem {
+  background: #fdfcf6;
+  border: 1px solid var(--hedge);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.needCard {
+  border-left: 4px solid var(--marigold);
+}
+
+.needCard h4,
+.libraryCard h4,
+.experimentCard h4,
+.performanceCard h4,
+.topPerformer h4 {
+  margin: 8px 0 4px;
+  font-size: 1.02rem;
+}
+
+.needCard p,
+.libraryCard p,
+.experimentCard p,
+.performanceCard p,
+.topPerformer p {
+  margin: 3px 0;
+  color: var(--soil);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.streamCard {
+  border-left: 4px solid var(--sprout);
+}
+
+.rowBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.inlineActions,
+.cardActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.detailBox {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--linen);
+  border: 1px solid var(--hedge-soft);
+}
+
+.detailBox strong {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--sprout);
+  margin-bottom: 3px;
+}
+
+.detailBox p {
+  margin: 0;
+  font-size: 0.87rem;
+  color: var(--ink);
+}
+
+.metricPills,
+.libraryMeta,
+.experimentMeta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.metricPills span,
+.libraryMeta span,
+.experimentMeta span {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--sprout-deep);
+  background: var(--sprout-soft);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.experimentMeta {
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+.hookText {
+  font-style: italic;
+}
+
+.smallMuted {
+  color: var(--soil);
+  font-size: 0.78rem;
+  margin: 8px 0 0;
+}
+
+.smallLabel {
+  display: grid;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--soil);
+  margin-top: 10px;
+}
+
+/* ---------- forms ---------- */
+
+.createForm {
+  display: grid;
+  gap: 12px;
+}
+
+.createForm label {
+  display: grid;
+  gap: 5px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--soil);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.formSubmit {
+  margin-top: 4px;
+}
+
+/* ---------- pipeline ---------- */
+
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.pipelineColumn {
+  background: var(--linen-deep);
+  border: 1px solid var(--hedge);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.pipelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+.pipelineHeader h3 {
+  margin: 0;
+  font-size: 0.98rem;
+  color: var(--sprout-deep);
+}
+
+.pipelineHeader span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: var(--paper);
+  border: 1px solid var(--hedge);
+  border-radius: 999px;
+  padding: 2px 9px;
+  color: var(--soil);
+}
+
+/* ---------- dashboard extras ---------- */
+
+.contentPreviewGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.topPerformer {
+  border-left: 4px solid var(--sprout);
+}
+
+/* ---------- performance ---------- */
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.metricGrid label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--soil);
+}
+
+.performanceActions {
+  display: flex;
+  gap: 8px;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.performanceActions .smallLabel {
+  margin-top: 0;
+}
+
+.performanceActions .ghostButton {
+  border-color: var(--berry);
+  color: var(--berry);
+}
+
+.performanceActions .ghostButton:hover {
+  background: var(--berry-soft);
+}
+
+/* ---------- backend / tool shed ---------- */
+
+.backendButtonRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.backendGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.backendPanel {
+  background: var(--linen);
+  border: 1px solid var(--hedge);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.backendPanel h4 {
+  margin: 0 0 8px;
+  color: var(--sprout-deep);
+}
+
+.backendPanel p {
+  margin: 4px 0;
+  font-size: 0.85rem;
+  color: var(--soil);
+  overflow-wrap: anywhere;
+}
+
+.backendListItem {
+  margin-top: 8px;
+  padding: 10px 12px;
+}
+
+.backendListItem strong {
+  font-size: 0.9rem;
+}
+
+.backendListItem p {
+  margin: 3px 0 0;
+  font-size: 0.8rem;
+  color: var(--soil);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- states ---------- */
+
+.backendError {
+  background: var(--berry-soft);
+  border: 1px solid var(--berry);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #6c3241;
+}
+
+.backendError strong {
+  display: block;
+  margin-bottom: 3px;
+}
+
+.backendError p {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.globalError {
+  width: 100%;
+}
+
+.loadingText {
+  margin: 0;
+  color: var(--soil);
+  font-style: italic;
+}
+
+.emptyState {
+  border: 1px dashed var(--hedge);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  background: var(--linen);
+}
+
+.emptyState p {
+  margin: 0;
+  color: var(--soil);
+  font-size: 0.86rem;
+}
+
+/* ---------- Etsy image-commerce v1 ---------- */
+
+.farmHero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 28px 30px;
+  border: 1px solid #cbd5af;
+  border-radius: 20px;
+  background:
+    linear-gradient(110deg, rgba(251, 249, 240, 0.94), rgba(226, 234, 207, 0.92)),
+    var(--paper);
+  box-shadow: var(--shadow-soft);
+}
+
+.farmHero h3,
+.cropTitleRow h3 {
+  margin: 5px 0 8px;
+  font-size: clamp(1.55rem, 3vw, 2.3rem);
+  color: var(--sprout-deep);
+}
+
+.farmHero p:not(.eyebrow),
+.cropTitleRow p {
+  max-width: 700px;
+  margin: 0;
+  color: var(--soil);
+  line-height: 1.55;
+}
+
+.compactFarmHero {
+  padding-block: 22px;
+}
+
+.etsyStats {
+  grid-template-columns: repeat(4, minmax(145px, 1fr));
+}
+
+.decisionRow {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 15px;
+  border: 1px solid var(--hedge);
+  border-radius: 12px;
+  background: var(--paper);
+  text-align: left;
+}
+
+.decisionRow:hover,
+.harvestCard:hover,
+.cropCard:hover {
+  border-color: var(--sprout);
+  transform: translateY(-1px);
+}
+
+.decisionRow span:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.decisionRow small,
+.harvestCard span,
+.harvestCard small,
+.cropMeta,
+.assetBody small,
+.batchStrip span {
+  color: var(--soil);
+}
+
+.topCropCard {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+
+.topCropCard h3,
+.topCropCard p {
+  margin: 0;
+}
+
+.harvestGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.harvestCard {
+  display: grid;
+  gap: 7px;
+  min-height: 112px;
+  padding: 16px;
+  border: 1px solid var(--hedge);
+  border-radius: 14px;
+  background: var(--paper);
+  text-align: left;
+  transition: 0.15s ease;
+}
+
+.statusBadge,
+.podFlag {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 25px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--sprout-soft);
+  color: var(--sprout-deep);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.status-rejected,
+.status-archived {
+  color: var(--berry);
+  background: var(--berry-soft);
+}
+
+.status-final,
+.status-exported,
+.status-live {
+  color: #76501c;
+  background: var(--marigold-soft);
+}
+
+.status-review,
+.status-listing_draft,
+.status-generating {
+  color: #476974;
+  background: #dce9eb;
+}
+
+.podFlag {
+  background: var(--marigold-soft);
+  color: #76501c;
+}
+
+.etsyCreateForm {
+  gap: 18px;
+}
+
+.etsyFormGrid,
+.listingForm,
+.batchGenerator,
+.performanceForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.etsyFormGrid label,
+.listingForm label,
+.batchGenerator label,
+.performanceForm label,
+.filterBar label {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  color: var(--soil);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.spanTwo {
+  grid-column: 1 / -1;
+}
+
+.checkLabel {
+  display: flex !important;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 8px !important;
+}
+
+.checkLabel input {
+  width: auto;
+}
+
+.filterBar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.cropGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cropCard {
+  display: grid;
+  gap: 13px;
+  padding: 20px;
+  border: 1px solid var(--hedge);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+  transition: 0.15s ease;
+}
+
+.cropCard h3,
+.cropCard p {
+  margin: 0;
+}
+
+.cropCard p {
+  min-height: 42px;
+  color: var(--soil);
+  line-height: 1.45;
+}
+
+.cropMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  font-size: 0.78rem;
+}
+
+.cropLink {
+  color: var(--sprout-deep);
+  font-weight: 700;
+}
+
+.backButton {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sprout-deep);
+  font-weight: 700;
+}
+
+.cropTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.titleBadges {
+  display: flex;
+  gap: 8px;
+}
+
+.successNotice {
+  padding: 12px 15px;
+  border: 1px solid #b8c99b;
+  border-radius: 12px;
+  background: var(--sprout-soft);
+  color: var(--sprout-deep);
+  overflow-wrap: anywhere;
+}
+
+.briefGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.briefGrid > div {
+  padding: 14px;
+  border: 1px solid var(--hedge);
+  border-radius: 12px;
+  background: var(--paper);
+}
+
+.briefGrid span,
+.assetPicker > span,
+.performanceSummary span,
+.recommendation span {
+  color: var(--soil);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.briefGrid p {
+  margin: 7px 0 0;
+  line-height: 1.5;
+}
+
+.importButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 13px;
+  border: 1px solid var(--sprout);
+  border-radius: 10px;
+  color: var(--sprout-deep);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.importButton input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.batchStrip {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.batchStrip > div {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--linen);
+  font-size: 0.82rem;
+}
+
+.assetGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.assetCard {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--hedge);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.assetCard.asset-final {
+  border-color: var(--marigold);
+  box-shadow: 0 0 0 2px var(--marigold-soft);
+}
+
+.assetCard.asset-rejected img {
+  filter: grayscale(1);
+  opacity: 0.48;
+}
+
+.assetCard img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  /* contain (not cover) so the full design is visible without cropping */
+  object-fit: contain;
+  padding: 8px;
+  background: var(--linen-deep);
+}
+
+.assetBody {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+}
+
+.assetBody strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assetActions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-top: 1px solid var(--hedge);
+}
+
+.assetActions button {
+  padding: 8px;
+  border: 0;
+  border-right: 1px solid var(--hedge);
+  border-bottom: 1px solid var(--hedge);
+  background: transparent;
+  color: var(--soil);
+  font-size: 0.75rem;
+}
+
+.assetActions button:hover {
+  background: var(--sprout-soft);
+  color: var(--sprout-deep);
+}
+
+.assetPicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 16px;
+  padding: 13px;
+  border: 1px dashed var(--hedge);
+  border-radius: 12px;
+}
+
+.assetPicker > span {
+  flex-basis: 100%;
+}
+
+.assetPicker .checkLabel {
+  grid-column: auto;
+}
+
+.listingActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.taxonomyPicker {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+}
+
+.taxonomyPicker > span {
+  color: var(--soil);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.taxonomyPicker .inlineActions {
+  align-items: stretch;
+}
+
+.taxonomyPicker .inlineActions input {
+  min-width: 0;
+  flex: 1;
+}
+
+.exportPath {
+  margin: 0;
+  color: var(--soil);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+.performanceSummary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.performanceSummary > div {
+  display: grid;
+  gap: 4px;
+  padding: 13px;
+  border-radius: 11px;
+  background: var(--linen);
+}
+
+.recommendation {
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+  color: var(--sprout-deep);
+}
+
+.decisionButtons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid var(--hedge);
+  color: var(--soil);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.decisionButtons button {
+  padding: 7px 10px;
+  border: 1px solid var(--hedge);
+  border-radius: 999px;
+  background: var(--paper);
+}
+
+.decisionButtons button:hover,
+.decisionButtons button.active {
+  border-color: var(--sprout);
+  background: var(--sprout-soft);
+  color: var(--sprout-deep);
+}
+
+.integrationPanel {
+  border-color: #c7d3ad;
+}
+
+.connectionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.connectionCard {
+  display: grid;
+  justify-items: start;
+  gap: 11px;
+  padding: 16px;
+  border: 1px solid var(--hedge);
+  border-radius: 13px;
+  background: var(--paper);
+}
+
+.connectionCard p {
+  margin: 0;
+  color: var(--soil);
+}
+
+.buttonLink {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.status-needs_setup,
+.status-failed {
+  color: var(--berry);
+  background: var(--berry-soft);
+}
+
+.status-authorize,
+.status-running,
+.status-not_run {
+  color: #76501c;
+  background: var(--marigold-soft);
+}
+
+.status-connected,
+.status-completed,
+.status-published,
+.status-draft_ready {
+  color: var(--sprout-deep);
+  background: var(--sprout-soft);
+}
+
+.status-skipped {
+  color: var(--soil);
+  background: var(--linen-deep);
+}
+
+.referenceNote {
+  padding: 10px 12px;
+  border-top: 1px solid var(--hedge);
+  background: #e6edf0;
+  color: #476974;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.pipelinePanel {
+  border-color: var(--marigold);
+}
+
+.pipelineReadiness {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pipelineReadiness > div {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--linen);
+  min-width: 0;
+}
+
+.pipelineReadiness span {
+  color: var(--soil);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pipelineReadiness strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pipelineSteps {
+  display: grid;
+  gap: 7px;
+  margin-top: 16px;
+}
+
+.pipelineSteps > div {
+  display: grid;
+  grid-template-columns: auto minmax(150px, 0.5fr) 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 11px;
+  border: 1px solid var(--hedge);
+  border-radius: 10px;
+}
+
+.pipelineSteps small {
+  color: var(--soil);
+  overflow-wrap: anywhere;
+}
+
+.publishControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  padding: 15px;
+  border-radius: 12px;
+  background: var(--linen);
+}
+
+.publishControls > div {
+  max-width: 680px;
+}
+
+.presetSummary {
+  display: grid;
+  gap: 4px;
+  align-content: center;
+  padding: 10px 12px;
+  border: 1px solid var(--hedge);
+  border-radius: 10px;
+  background: var(--linen);
+}
+
+.presetSummary span,
+.presetSummary small {
+  color: var(--soil);
+}
+
+.publishControls p {
+  margin: 5px 0 0;
+}
+
+.activationGate {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--berry) 45%, var(--hedge));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--berry) 5%, white);
+}
+
+.activationGate > label:not(.checkLabel) {
+  display: grid;
+  gap: 7px;
+}
+
+.activationGate input[type="text"],
+.activationGate input:not([type]) {
+  max-width: 420px;
+}
+
+.activationGate .dangerButton {
+  justify-self: start;
+}
+
+.dangerButton {
+  padding: 10px 15px;
+  border: 1px solid var(--berry);
+  border-radius: 10px;
+  background: var(--berry);
+  color: white;
+  font-weight: 700;
+}
+
+.dangerButton:disabled,
+.primaryButton:disabled,
+.ghostButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+@media (max-width: 1050px) {
+  .etsyStats,
+  .cropGrid,
+  .assetGrid,
+  .harvestGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filterBar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pipelineReadiness {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .farmHero,
+  .cropTitleRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .etsyStats,
+  .cropGrid,
+  .assetGrid,
+  .harvestGrid,
+  .filterBar,
+  .etsyFormGrid,
+  .listingForm,
+  .batchGenerator,
+  .performanceForm,
+  .briefGrid,
+  .performanceSummary {
+    grid-template-columns: 1fr;
+  }
+
+
+  .connectionGrid,
+  .pipelineReadiness {
+    grid-template-columns: 1fr;
+  }
+
+  .publishControls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pipelineSteps > div {
+    grid-template-columns: 1fr;
+  }
+
+  .spanTwo {
+    grid-column: 1;
+  }
+
+  .batchStrip > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   Engine layer — dashboard, design review modal, tables
+   ============================================================ */
+
+/* Status badges for the engine vocabulary (honest states included) */
+.status-approved,
+.status-active,
+.status-ready_to_publish,
+.status-keep,
+.status-ebay,
+.status-cleared,
+.status-pass {
+  color: var(--sprout-deep);
+  background: var(--sprout-soft);
+}
+
+.status-generated,
+.status-review,
+.status-needs_edit,
+.status-remix_requested,
+.status-publishing,
+.status-needs_attention,
+.status-needs_auth,
+.status-remix,
+.status-bundle,
+.status-revise_title,
+.status-revise_price,
+.status-revise_mockup,
+.status-sticker,
+.status-unreviewed {
+  color: #76501c;
+  background: var(--marigold-soft);
+}
+
+.status-rejected,
+.status-publish_failed,
+.status-killed,
+.status-kill,
+.status-not_configured,
+.status-missing_credentials,
+.status-flagged,
+.status-fail {
+  color: var(--berry);
+  background: var(--berry-soft);
+}
+
+.status-draft,
+.status-ended,
+.status-archive,
+.status-etsy,
+.status-gumroad,
+.status-printify,
+.status-printful,
+.status-gelato {
+  color: var(--soil);
+  background: var(--linen-deep);
+}
+
+/* Sidebar count badge */
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.navBadge {
+  min-width: 20px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--marigold);
+  color: #3a2a10;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Dashboard "Needs You" grid */
+.needsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.needsCard {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--hedge);
+  border-radius: 14px;
+  background: var(--paper);
+  text-align: left;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.needsCard:hover {
+  border-color: var(--sprout);
+  box-shadow: var(--shadow-soft);
+}
+
+.needsCount {
+  font-family: var(--display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--sprout-deep);
+}
+
+.needsLabel {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.needsArrow {
+  color: var(--soil);
+}
+
+/* Full-aspect design review modal */
+.reviewModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(30, 28, 18, 0.62);
+  backdrop-filter: blur(3px);
+}
+
+.reviewModal {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
+  gap: 0;
+  width: min(1100px, 100%);
+  max-height: 90vh;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: 0 20px 60px rgba(30, 28, 18, 0.4);
+}
+
+.reviewModalImageWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background:
+    repeating-conic-gradient(var(--linen-deep) 0% 25%, var(--linen) 0% 50%)
+    50% / 24px 24px;
+}
+
+/* The whole point of issue #1: show the design at true aspect ratio */
+.reviewModalImage {
+  max-width: 100%;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
+}
+
+.reviewModalSide {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 20px;
+  overflow-y: auto;
+  border-left: 1px solid var(--hedge);
+}
+
+.reviewModalSide h3 {
+  margin: 0;
+}
+
+.metaList {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.metaList > div {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+
+.metaList dt {
+  color: var(--soil);
+  font-weight: 700;
+}
+
+.metaList dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.reviewModalActions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.reviewModalRemix,
+.reviewModalCompile {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px dashed var(--hedge);
+  border-radius: 12px;
+}
+
+.reviewModalCompile {
+  border-style: solid;
+  background: var(--linen);
+}
+
+/* Design Review grid (full-aspect thumbnails, no cropping) */
+.designGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.designCard {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--hedge);
+  border-radius: 14px;
+  background: var(--paper);
+  text-align: left;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.designCard:hover {
+  border-color: var(--sprout);
+  box-shadow: var(--shadow-soft);
+}
+
+.designCard.design-rejected .designThumb {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.designThumbWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 10px;
+  background:
+    repeating-conic-gradient(var(--linen-deep) 0% 25%, var(--linen) 0% 50%)
+    50% / 18px 18px;
+}
+
+.designThumb {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.designCardBody {
+  display: grid;
+  gap: 5px;
+  padding: 11px;
+  min-width: 0;
+}
+
+.designCardBody strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.designCardBody small {
+  color: var(--soil);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Data tables (batches, orders, adapters) */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.dataTable th,
+.dataTable td {
+  padding: 9px 11px;
+  text-align: left;
+  border-bottom: 1px solid var(--hedge);
+  vertical-align: top;
+}
+
+.dataTable th {
+  color: var(--soil);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dataTable code {
+  font-size: 0.78rem;
+  color: var(--sprout-deep);
+}
+
+.detailCell {
+  color: var(--soil);
+  max-width: 420px;
+}
+
+/* Presets */
+.presetCard {
+  cursor: default;
+}
+
+.presetChecks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.presetChecks span {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.presetChecks .ok {
+  color: var(--sprout-deep);
+  background: var(--sprout-soft);
+}
+
+.presetChecks .missing {
+  color: var(--berry);
+  background: var(--berry-soft);
+}
+
+/* Listings rows */
+.listingRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  padding: 15px;
+  border: 1px solid var(--hedge);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.listingMain {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.verticalActions {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+}
+
+/* Decisions */
+.decisionRow2 {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--hedge);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.decisionRow2 small {
+  display: block;
+  color: var(--soil);
+  margin-top: 3px;
+}
+
+.recommendationText {
+  margin: 6px 0 0;
+  color: var(--sprout-deep);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 1050px) {
+  .needsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 820px) {
+  .reviewModal {
+    grid-template-columns: 1fr;
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+
+  .reviewModalSide {
+    border-left: 0;
+    border-top: 1px solid var(--hedge);
+  }
+}
+
+@media (max-width: 720px) {
+  .needsGrid,
+  .decisionRow2,
+  .listingRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   Multi-land layer — nav groups, land board, Blog & POD Lands
+   ============================================================ */
+
+/* Channel / land statuses */
+.status-ready_to_start,
+.status-active_on_ebay,
+.status-synced_to_ebay {
+  color: var(--sprout-deep);
+  background: var(--sprout-soft);
+}
+
+.status-setup_needed,
+.status-approval_pending,
+.status-needs_update,
+.status-idea,
+.status-outline,
+.status-ready_for_printful,
+.status-uploaded_to_printful,
+.status-update,
+.status-expand {
+  color: #76501c;
+  background: var(--marigold-soft);
+}
+
+.status-developer_account_blocked {
+  color: var(--berry);
+  background: var(--berry-soft);
+}
+
+.status-not_started,
+.status-planned,
+.status-paused,
+.status-retired,
+.status-blog,
+.status-wordpress,
+.status-ghost,
+.status-local_markdown {
+  color: var(--soil);
+  background: var(--linen-deep);
+}
+
+/* Sidebar groups */
+.navGroup {
+  display: grid;
+  gap: 3px;
+}
+
+.navGroupTitle {
+  margin: 10px 0 2px;
+  color: var(--soil);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Dashboard land strip */
+.landStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.landChip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 12px;
+  border: 1px solid var(--hedge);
+  border-radius: 999px;
+  background: var(--paper);
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.landChip:hover {
+  border-color: var(--sprout);
+}
+
+.landChipMore {
+  border-style: dashed;
+}
+
+.needsGrid.twoWide {
+  grid-template-columns: 1fr;
+}
+
+.needsDetail {
+  display: block;
+  margin-top: 2px;
+  color: var(--soil);
+  font-weight: 400;
+  font-size: 0.75rem;
+}
+
+/* Blog Land */
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.workChip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  border: 1px solid var(--hedge);
+  border-radius: 12px;
+  background: var(--paper);
+}
+
+.workChip strong {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  color: var(--sprout-deep);
+}
+
+.workChipEmpty {
+  opacity: 0.55;
+}
+
+.workChipEmpty strong {
+  color: var(--soil);
+}
+
+.clickableRow {
+  cursor: pointer;
+}
+
+.clickableRow:hover td {
+  background: var(--sprout-soft);
+}
+
+.missingFlag {
+  color: var(--berry);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.draftBody {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.decisionButtons.wrapButtons {
+  flex-wrap: wrap;
+}
+
+/* Seeds */
+.seedForm {
+  grid-template-columns: 2fr 1fr 1fr auto;
+  align-items: end;
+}
+
+.inlineSelect {
+  padding: 5px 8px;
+  border: 1px solid var(--hedge);
+  border-radius: 8px;
+  background: var(--paper);
+  font-size: 0.78rem;
+}
+
+/* POD Land */
+.setupCallout {
+  border-color: var(--marigold);
+  background: var(--marigold-soft);
+  color: #5d3f16;
+}
+
+.planThumb {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border: 1px solid var(--hedge);
+  border-radius: 10px;
+  background: var(--linen-deep);
+  padding: 4px;
+}
+
+.checklist {
+  display: grid;
+  gap: 7px;
+}
+
+.checkItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 11px;
+  border: 1px solid var(--hedge);
+  border-radius: 10px;
+  background: var(--paper);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.checkItem input {
+  margin-top: 2px;
+}
+
+.checkItem.done {
+  opacity: 0.6;
+}
+
+.checkItem.done span {
+  text-decoration: line-through;
+}
+
+@media (max-width: 900px) {
+  .seedForm {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ============================================================
+   Etsy Personal Access panel — honest ladder + draft-only test
+   ============================================================ */
+
+.status-etsy_ready_for_draft_test,
+.status-ready_for_draft_test,
+.status-etsy_connected,
+.status-uploaded {
+  color: var(--sprout-deep);
+  background: var(--sprout-soft);
+}
+
+.status-personal_access_ready_for_oauth,
+.status-etsy_credentials_present,
+.status-oauth_required,
+.status-token_stored,
+.status-missing_shop_id,
+.status-missing_shipping_profile,
+.status-missing_readiness_profile,
+.status-missing_taxonomy_id,
+.status-pending,
+.status-test_mode_draft_only {
+  color: #76501c;
+  background: var(--marigold-soft);
+}
+
+.status-auth_failed,
+.status-draft_creation_failed,
+.status-image_upload_failed,
+.status-token_expired {
+  color: var(--berry);
+  background: var(--berry-soft);
+}
+
+.status-personal {
+  color: var(--soil);
+  background: var(--linen-deep);
+}
+
+.etsyPanel {
+  border-color: var(--marigold);
+}
+
+.etsyGates {
+  margin: 12px 0;
+}
+
+.etsyActions {
+  flex-wrap: wrap;
+}
+
+.etsyDraftBox {
+  margin-top: 18px;
+  padding: 15px;
+  border: 1px dashed var(--hedge);
+  border-radius: 12px;
+  background: var(--linen);
+}
+
+.etsyDraftBox .listingForm {
+  margin-bottom: 12px;
+}
+
+.etsyDraftResult {
+  margin-top: 12px;
+}
+
+.etsyPanel .metaList > div {
+  grid-template-columns: 120px 1fr;
+}
+
+/* Generation in-progress banner */
+.genProgress {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: 13px;
+  padding: 12px 15px;
+  border: 1px solid var(--sprout);
+  border-radius: 11px;
+  background: var(--sprout-soft);
+  color: var(--sprout-deep);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.genSpinner {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  border: 2px solid var(--sprout);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: genspin 0.8s linear infinite;
+}
+
+@keyframes genspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .genSpinner {
+    animation: none;
+  }
+}
+
+/* Critique + compounding style-learnings loop */
+.critiquePanel {
+  border-color: var(--sprout);
+}
+
+.learningsNote {
+  margin: 10px 0 0;
+  color: var(--sprout-deep) !important;
+}
+
+.critiqueAction {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.critiqueAction .smallLabel {
+  grid-column: 1;
+}
+
+.critiqueResult {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.critiqueResult .detailBox p {
+  overflow-wrap: anywhere;
+}
+
+.learningsBlock {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px solid var(--hedge);
+}
+
+.learningChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.learningChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px 5px 6px;
+  border: 1px solid var(--hedge);
+  border-radius: 999px;
+  background: var(--sprout-soft);
+  color: var(--sprout-deep);
+  font-size: 0.78rem;
+  font-weight: 600;
+  max-width: 100%;
+}
+
+.learningChip.off {
+  background: var(--linen-deep);
+  color: var(--soil);
+  opacity: 0.7;
+}
+
+.learningToggle,
+.learningDelete {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0 2px;
+  color: inherit;
+  line-height: 1;
+}
+
+.learningToggle {
+  font-size: 0.7rem;
+}
+
+.learningDelete {
+  font-size: 1rem;
+  color: var(--berry);
+}
+
+.learningSrc {
+  font-size: 0.66rem;
+  font-style: normal;
+  color: var(--soil);
+  background: var(--paper);
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+
+.learningAdd input {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .critiqueAction {
+    grid-template-columns: 1fr;
+  }
+}
+
+.status-missing_scopes {
+  color: var(--berry);
+  background: var(--berry-soft);
+}
+
+.etsyResolverBox {
+  border-style: solid;
+  border-color: var(--hedge);
+}
+
+.shopCandidates {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.shopCandidate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--hedge);
+  border-radius: 10px;
+  background: var(--paper);
+}
+
+.shopCandidate .presetChecks {
+  display: inline-flex;
+  margin-left: 8px;
+}
+
+.etsyDebug {
+  margin-top: 12px;
+}
+
+.etsyDebug summary {
+  cursor: pointer;
+  color: var(--soil);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.etsyDebug .metaList {
+  margin-top: 9px;
+}
+
+.debugBody {
+  margin: 9px 0 0;
+  padding: 10px;
+  max-height: 160px;
+  overflow: auto;
+  border: 1px solid var(--hedge);
+  border-radius: 8px;
+  background: var(--paper);
+  font-size: 0.72rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Focused Etsy workflow --------------------------------------------------- */
+.sidebarCard,
+.integrationPanel {
+  display: none;
+}
+
+.filterDisclosure {
+  margin: 0;
+}
+
+.filterDisclosure > summary,
+.workflowBrief > summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--soil);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.filterDisclosure[open] > summary,
+.workflowBrief[open] > summary {
+  margin-bottom: 10px;
+}
+
+.etsyCropGrid .cropCard > p,
+.etsyCropGrid .podFlag {
+  display: none;
+}
+
+.workflowStepper {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(100px, 1fr));
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--hedge);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.workflowStepper button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--soil);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.workflowStepper button span {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--linen-deep);
+  font-size: 0.74rem;
+}
+
+.workflowStepper button.done span {
+  color: white;
+  background: var(--sprout-deep);
+}
+
+.workflowStepper button.active {
+  color: var(--sprout-deep);
+  background: var(--sprout-soft);
+}
+
+.cropDetail > .cropBrief,
+.cropDetail > article,
+.cropDetail > .critiquePanel {
+  display: none;
+}
+
+.cropDetail[data-step="create"] > article:nth-of-type(2),
+.cropDetail[data-step="review"] > article:nth-of-type(3),
+.cropDetail[data-step="review"] > .critiquePanel,
+.cropDetail[data-step="listing"] > article:nth-of-type(4),
+.cropDetail[data-step="publish"] > article:nth-of-type(5),
+.cropDetail[data-step="performance"] > article:nth-of-type(6) {
+  display: block;
+}
+
+.workflowDetails > summary,
+.pipelineDetails > summary {
+  cursor: pointer;
+  color: var(--soil);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.workflowDetails[open] > summary,
+.pipelineDetails[open] > summary {
+  margin-bottom: 14px;
+}
+
+.pipelineReadiness > div:nth-child(-n + 2),
+.publishControls .smallMuted,
+.activationGate .smallMuted {
+  display: none;
+}
+
+.advancedFields > summary {
+  cursor: pointer;
+  color: var(--soil);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.advancedFieldsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.cropDetail[data-step="create"] .batchGenerator > label:nth-child(2),
+.cropDetail[data-step="create"] .batchGenerator > label:nth-child(4),
+.cropDetail[data-step="create"] .batchGenerator > label:nth-child(7),
+.cropDetail[data-step="create"] .learningsNote,
+.cropDetail[data-step="create"] .batchStrip,
+.cropDetail[data-step="review"] .assetBody > strong,
+.cropDetail[data-step="review"] .assetBody > small,
+.cropDetail[data-step="review"] .assetBody .rowBetween > small {
+  display: none;
+}
+
+.backendGrid > article:nth-of-type(n + 3) {
+  display: none;
+}
+
+.workflowBrief {
+  padding: 10px 14px;
+  border: 1px solid var(--hedge);
+  border-radius: 10px;
+  background: var(--paper);
+}
+
+.elapsedProgress {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--sprout);
+  border-radius: 12px;
+  background: var(--sprout-soft);
+}
+
+.elapsedProgressHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--sprout-deep);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.elapsedTrack {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--linen-deep);
+}
+
+.elapsedTrack span,
+.loadingLine {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--sprout), var(--sprout-deep));
+  transition: width 0.8s ease;
+}
+
+.loadingLine {
+  width: 35%;
+  height: 3px;
+  animation: loadingSweep 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes loadingSweep {
+  to { width: 100%; }
+}
+
+@media (max-width: 760px) {
+  .workflowStepper {
+    grid-template-columns: 1fr;
+  }
+
+  .workflowStepper button {
+    justify-content: flex-start;
+  }
+}
+
+.presetAutomation {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--hedge);
+  border-radius: 10px;
+  background: var(--sprout-soft);
+}
+
+.automationPanel {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 16px;
+}
+
+.automationControls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.automationControls .checkItem {
+  align-self: end;
+}
+
+.automationPreview pre {
+  max-height: 260px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 0.75rem;
+}
+
+.jobList {
+  display: grid;
+  gap: 8px;
+}
+
+.jobItem {
+  border-top: 1px solid var(--hedge);
+}
+
+.jobRow {
+  display: grid;
+  grid-template-columns: auto minmax(150px, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+}
+
+.jobResult {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 0 0 10px;
+  color: var(--soil);
+  font-size: 0.8rem;
+}
+
+.jobResult strong {
+  flex-basis: 100%;
+}
+
+.safeProof {
+  color: var(--sprout-deep);
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .jobRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
