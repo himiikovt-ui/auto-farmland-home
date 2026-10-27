@@ -2,6 +2,7 @@ const { CONNECTION_STATUS } = require("./status.cjs");
 const { CHANNEL_REGISTRY } = require("./channels.cjs");
 const { ensureAutomationData } = require("../automation/policy.cjs");
 const { normalizeCreativeStrategy } = require("../automation/creativeStrategy.cjs");
+const { ensureProjects } = require("./projects.cjs");
 
 // Auto Farmland engine schema — additive, non-destructive migration.
 //
@@ -22,6 +23,14 @@ const { normalizeCreativeStrategy } = require("../automation/creativeStrategy.cj
 
 function nowIso() {
   return new Date().toISOString();
+}
+
+// Seeding writes many records in one tick, so ids get a counter instead of
+// relying on Date.now() + random to stay unique.
+let seedSequence = 0;
+function makeSeedId(prefix) {
+  seedSequence += 1;
+  return `${prefix}-${Date.now()}-${seedSequence}`;
 }
 
 // The first product preset: eBay POD Sticker. Values that would come from a
@@ -438,7 +447,10 @@ function ensureEngineData(data) {
   // experimental. External publishing and automatic deactivation stay locked.
   ensureAutomationData(data, nowIso);
 
-  data.engineSchemaVersion = 5;
+  // --- v6: project board (every shop, channel, app, and game) --------------
+  ensureProjects(data, makeSeedId, nowIso);
+
+  data.engineSchemaVersion = 6;
   return data;
 }
 

@@ -187,12 +187,120 @@ function buildMarketplaceAccounts(data) {
     }));
 }
 
+export const PROJECT_PENS = [
+  { key: "shops", label: "Shops", animal: "cow", hint: "Places you sell things" },
+  { key: "channels", label: "Channels", animal: "sheep", hint: "Places you post things" },
+  { key: "builds", label: "Apps & Games", animal: "sheep", hint: "Things you are making" },
+];
+
+export const PROJECT_TYPES = {
+  etsy: { label: "Etsy", pen: "shops" },
+  ebay: { label: "eBay", pen: "shops" },
+  gumroad: { label: "Gumroad", pen: "shops" },
+  shop: { label: "Shop", pen: "shops" },
+  youtube: { label: "YouTube", pen: "channels" },
+  tiktok: { label: "TikTok", pen: "channels" },
+  instagram: { label: "Instagram", pen: "channels" },
+  pinterest: { label: "Pinterest", pen: "channels" },
+  blog: { label: "Blog", pen: "channels" },
+  app: { label: "App", pen: "builds" },
+  game: { label: "Game", pen: "builds" },
+  website: { label: "Website", pen: "builds" },
+  other: { label: "Other", pen: "builds" },
+};
+
+export const PROJECT_STATUSES = [
+  { key: "idea", label: "Idea", hint: "Just a thought so far" },
+  { key: "planning", label: "Planning", hint: "Figuring out the pieces" },
+  { key: "building", label: "Building", hint: "Actively making it" },
+  { key: "live", label: "Live", hint: "Out in the world" },
+  { key: "resting", label: "Resting", hint: "Paused on purpose" },
+  { key: "stuck", label: "Stuck", hint: "Something is blocking it" },
+];
+
+const STATUS_LABELS = Object.fromEntries(PROJECT_STATUSES.map((status) => [status.key, status.label]));
+
+// Lower rank = shown first on the "Do next" board.
+const FOCUS_RANK = { stuck: 1, building: 2, live: 3, planning: 4, idea: 5 };
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+function projectAnimal(project, account, index) {
+  const type = PROJECT_TYPES[project.type] ? project.type : "other";
+  const pen = PROJECT_TYPES[type].pen;
+  const steps = project.nextSteps || [];
+  const openSteps = steps.filter((step) => !step.done);
+  return {
+    ...project,
+    type,
+    typeLabel: PROJECT_TYPES[type].label,
+    pen,
+    animal: PROJECT_PENS.find((entry) => entry.key === pen).animal,
+    status: STATUS_LABELS[project.status] ? project.status : "idea",
+    statusLabel: STATUS_LABELS[project.status] || "Idea",
+    nextStep: openSteps[0] || null,
+    openSteps,
+    doneSteps: steps.filter((step) => step.done),
+    account: account || null,
+    warning: account?.warning || null,
+    skinIndex: index,
+  };
+}
+
+// Connected accounts with no project yet still get an animal, so nothing that
+// was on the old pasture disappears.
+function accountOnlyAnimal(account, index) {
+  const type = PROJECT_TYPES[account.platform] ? account.platform : "shop";
+  return projectAnimal({
+    id: `account-${account.id}`,
+    name: account.name,
+    type,
+    status: "live",
+    linkedAccount: account.platform,
+    url: account.shopUrl || "",
+    nextSteps: [],
+    accountOnly: true,
+  }, account, index);
+}
+
+function buildFocusBoard(animals) {
+  const ranked = animals
+    .filter((animal) => animal.nextStep && animal.status !== "resting")
+    .map((animal) => ({ animal, rank: animal.focus ? 0 : FOCUS_RANK[animal.status] ?? 6 }))
+    .sort((a, b) => a.rank - b.rank || String(b.animal.updatedAt || "").localeCompare(String(a.animal.updatedAt || "")));
+  return ranked.slice(0, 5).map(({ animal }) => ({
+    projectId: animal.id,
+    projectName: animal.name,
+    animal: animal.animal,
+    status: animal.status,
+    statusLabel: animal.statusLabel,
+    focus: Boolean(animal.focus),
+    step: animal.nextStep,
+  }));
+}
+
 export function buildFarmDashboardModel({ data = {}, integrationStatus = {} } = {}) {
   const accounts = [buildEtsyAccount(data, integrationStatus), ...buildMarketplaceAccounts(data)].filter(Boolean);
-  const activeListings = accounts.reduce((sum, account) => sum + account.metrics.activeListings.value, 0);
+  const projects = data.projects || [];
+  const usedAccounts = new Set();
+  const animals = projects.map((project, index) => {
+    const account = project.linkedAccount
+      ? accounts.find((entry) => entry.platform === project.linkedAccount && !usedAccounts.has(entry.id))
+      : null;
+    if (account) usedAccounts.add(account.id);
+    return projectAnimal(project, account, index);
+  });
+  accounts
+    .filter((account) => !usedAccounts.has(account.id))
+    .forEach((account) => animals.push(accountOnlyAnimal(account, animals.length)));
+
   const trackedAccounts = accounts.filter((account) => account.metrics.revenue.available);
   const revenue = trackedAccounts.reduce((sum, account) => sum + account.metrics.revenue.value, 0);
-  const views = trackedAccounts.reduce((sum, account) => sum + account.metrics.views.value, 0);
+  const now = Date.now();
+  const doneThisWeek = projects
+    .flatMap((project) => project.nextSteps || [])
+    .filter((step) => step.done && now - new Date(step.doneAt).getTime() < WEEK_MS).length;
+  const stuck = animals.filter((animal) => animal.status === "stuck").length;
   const reviewCrop = (data.crops || []).find((crop) =>
     (data.assets || []).some((asset) => asset.cropId === crop.id && !asset.isReference && ["review", "generated"].includes(asset.status))
   ) || (data.crops || [])[0] || null;
@@ -200,12 +308,16 @@ export function buildFarmDashboardModel({ data = {}, integrationStatus = {} } = 
   return {
     loading: !data.schemaVersion,
     metrics: [
+      { key: "projects", label: "On the farm", ...metric(animals.length, { note: `${animals.filter((animal) => animal.status === "live").length} live` }) },
+      { key: "done", label: "Steps done this week", ...metric(doneThisWeek, { note: doneThisWeek ? "Keep it going" : "Tick one off below" }) },
+      { key: "stuck", label: "Stuck", ...metric(stuck, { note: stuck ? "Click a ! to see why" : "Nothing blocked" }) },
       { key: "revenue", label: "Total revenue", ...metric(revenue, { available: trackedAccounts.length > 0, format: money, note: "Connected or manual sources" }) },
-      { key: "views", label: "Total views", ...metric(views, { available: trackedAccounts.length > 0, note: "Connected or manual sources" }) },
-      { key: "active", label: "Active listings", ...metric(activeListings) },
-      { key: "accounts", label: "Connected accounts", ...metric(accounts.length) },
     ],
     accounts,
+    animals,
+    pens: PROJECT_PENS.map((pen) => ({ ...pen, animals: animals.filter((animal) => animal.pen === pen.key) })),
+    focus: buildFocusBoard(animals),
+    withoutNextStep: animals.filter((animal) => !animal.nextStep && !animal.accountOnly && animal.status !== "resting"),
     reviewCropId: reviewCrop?.id || null,
     warnings: accounts.flatMap((account) => account.warning ? [{ accountId: account.id, message: account.warning }] : []),
   };

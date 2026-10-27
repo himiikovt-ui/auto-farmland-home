@@ -11,6 +11,7 @@ const { EtsyClient } = require("./etsyClient.cjs");
 const { ensureEngineData } = require("./engine/schema.cjs");
 const { registerEngineRoutes } = require("./engine/routes.cjs");
 const { registerLandRoutes } = require("./engine/landRoutes.cjs");
+const { registerProjectRoutes } = require("./engine/projectRoutes.cjs");
 const { registerEtsyRoutes } = require("./engine/etsyRoutes.cjs");
 const { createAdapterRegistry } = require("./adapters/index.cjs");
 const { createRuntimePaths, ensureRuntimeFolders } = require("./config/runtime.cjs");
@@ -2594,6 +2595,10 @@ registerLandRoutes(app, {
   adapters,
   exportsDir: EXPORTS_DIR,
 });
+
+// Project board: every shop, channel, app, and game on the farm, with its
+// status and next steps.
+registerProjectRoutes(app, { readData, writeData, makeId, nowIso });
 
 // Etsy Personal Access test lane: OAuth (PKCE), readiness ladder, shop/setup
 // resolution, and the guarded draft-only listing test. Secrets stay under

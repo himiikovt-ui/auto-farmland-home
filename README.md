@@ -5,6 +5,25 @@ A private, local-first, multi-channel passive income operating system. Each
 **crop** is a repeatable output type. Blog Land is the priority-1 channel and
 is usable today; see `AUTO_FARMLAND.md` for the full land map and strategy.
 
+## The farm: every project in one place
+
+The home screen shows **all** of your projects as animals in three pens:
+
+- **Shops** (cows): Etsy, eBay, Gumroad, other stores
+- **Channels** (sheep): YouTube, TikTok, Instagram, Pinterest, blog
+- **Apps & Games** (sheep): apps, games, websites, anything else you build
+
+Click an animal to see its status (Idea → Planning → Building → Live, or
+Resting / Stuck), the one step to **do next**, the steps after that, and
+notes. The wooden **Do next** board picks one step from each project, with
+★ focus projects first, then stuck ones. Use the dashed **+ Add** spot in a
+pen to add a new project. A shop linked to a real account (the Etsy shop)
+also shows its listings, presets, and money.
+
+Projects live in the `projects` collection (`server/engine/projects.cjs`,
+routes in `server/engine/projectRoutes.cjs`). A starter farm is written once;
+deleting projects never brings it back.
+
 ## Etsy v1 loop
 
 1. Open the Etsy Farm and plant a Crop.

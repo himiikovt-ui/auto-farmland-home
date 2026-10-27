@@ -429,6 +429,28 @@ function App() {
     }
   }
 
+  // Project board saves report problems to the caller (shown inline on the
+  // project card) instead of the global error, which would hide the farm.
+  async function runProjectAction(path, method = "POST", body) {
+    const result = await fetchJson(path, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    await loadData();
+    return result;
+  }
+
+  const projectActions = {
+    create: (fields) => runProjectAction("/api/projects", "POST", fields),
+    update: (id, fields) => runProjectAction(`/api/projects/${id}`, "PATCH", fields),
+    remove: (id) => runProjectAction(`/api/projects/${id}`, "DELETE"),
+    addStep: (id, text) => runProjectAction(`/api/projects/${id}/steps`, "POST", { text }),
+    updateStep: (id, stepId, fields) => runProjectAction(`/api/projects/${id}/steps/${stepId}`, "PATCH", fields),
+    moveStep: (id, stepId, direction) => runProjectAction(`/api/projects/${id}/steps/${stepId}/move`, "POST", { direction }),
+    removeStep: (id, stepId) => runProjectAction(`/api/projects/${id}/steps/${stepId}`, "DELETE"),
+  };
+
   function openCrop(cropId, step = null) {
     setSelectedCropId(cropId);
     setRequestedCropStep(step);
@@ -565,7 +587,7 @@ function App() {
           </div>
           <div>
             <h1>Auto Farmland</h1>
-            <p>Etsy listing pipeline</p>
+            <p>All your projects, one farm</p>
           </div>
         </div>
 
@@ -634,6 +656,7 @@ function App() {
           <FarmDashboard
             model={farmModel}
             error={error}
+            projectActions={projectActions}
             onCreateListing={() => {
               setOpenCreateOnEtsy(true);
               setActiveScreen("Etsy");

@@ -189,6 +189,17 @@ Rules: no fake API success, explicit statuses (`not_configured`,
 
 ## UI
 
+**Farm home (project board).** Every shop, channel, app, and game is a
+`projects` record: name, type, status (`idea · planning · building · live ·
+resting · stuck`), ordered `nextSteps` (`{ text, done, doneAt }`), notes,
+links, `focus`, `stuckReason`, and an optional `linkedAccount` (`etsy`,
+`ebay`, `gumroad`). Type decides the pen (Shops = cows; Channels and Apps &
+Games = sheep). The **Do next** board shows the first open step of up to five
+projects (focus → stuck → building → live → planning → idea; resting is
+skipped). Step changes go through small per-step routes
+(`/api/projects/:id/steps[/:stepId[/move]]`) so rapid ticks never overwrite
+each other. The starter farm is seeded once (`projectsSeeded` flag).
+
 Nav groups — **Grow**: Dashboard, Seeds, Batches, Designs & Assets ·
 **Lands**: Blog Land, POD Land, Listings/Products, Etsy Studio ·
 **Manage**: Channels & Lands, Product Presets, Orders, Metrics & Decisions,
